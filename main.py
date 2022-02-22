@@ -3,14 +3,16 @@ import sys
 import sqlite3
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem, QTextEdit, QTableWidget, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem
+from main_intf import Ui_MainWindow
+from addEditCoffeeForm import Ui_MainWindow as Ui1
 
 
-class Example(QMainWindow):
+class Example(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.setupUi(self)
         self.data = []
-        uic.loadUi('main.ui', self)
         self.update()
         self.pushButton_2.clicked.connect(self.edit)
         self.pushButton.clicked.connect(self.new)
@@ -22,7 +24,7 @@ class Example(QMainWindow):
         self.tableWidget.setHorizontalHeaderLabels(title)
         self.tableWidget.setRowCount(0)
 
-        con = sqlite3.connect('coffee.sqlite')
+        con = sqlite3.connect('data/coffee.sqlite')
         cur = con.cursor()
         result = cur.execute("SELECT * FROM coffee").fetchall()
         res3 = {i[0]: i[1] for i in cur.execute('SELECT * FROM types').fetchall()}
@@ -56,10 +58,10 @@ class Example(QMainWindow):
         self.second_form.show()
 
 
-class NewWin(QMainWindow):
+class NewWin(QMainWindow, Ui1):
     def __init__(self, main_window, lst: list = None):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.setupUi(self)
         self.flag = False
         if lst is not None:
             self.flag = True
@@ -88,7 +90,7 @@ class NewWin(QMainWindow):
         coffee_taste = self.textEdit.toPlainText()
         coffee_price = int(self.lineEdit_4.text())
         coffee_v = int(self.lineEdit_5.text())
-        con = sqlite3.connect('coffee.sqlite')
+        con = sqlite3.connect('data/coffee.sqlite')
         cur = con.cursor()
         res = cur.execute(f"""SELECT id FROM types WHERE type = '{coffee_type}'""").fetchall()
         try:
@@ -124,7 +126,7 @@ class NewWin(QMainWindow):
         coffee_taste = self.textEdit.toPlainText()
         coffee_price = int(self.lineEdit_4.text())
         coffee_v = int(self.lineEdit_5.text())
-        con = sqlite3.connect('coffee.sqlite')
+        con = sqlite3.connect('data/coffee.sqlite')
         cur = con.cursor()
         res = cur.execute(f"""SELECT id FROM types WHERE type = '{coffee_type}'""").fetchall()
         try:
